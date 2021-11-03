@@ -1,9 +1,16 @@
 # dentist-visit-app
 Test exercise for CGI
 
+## Running the application
+- to run the application first you have to wait until all imports are completed
+- just in case open Maven menu from the right side panel
+- from Lifecycle run clean and package to let all dependencies set up correcly
+- check Java 8 JDK is set as project SDK as well as project language level is Java 8
+- run application from `DentistAppApplication` class
+
 ### Stage 0
 - opened the project through pom.xml file so that IntelliJ would be able to run Maven prject build immediately
-- during Spring Application startup there was not url in the console, so I just opened it at http://localhost:8080/
+- during Spring Application startup there was no url in the console, so I just opened it at http://localhost:8080/
 
 ### Stage 1
 - replaced dentist name input with dropdown selection to display all available dentists

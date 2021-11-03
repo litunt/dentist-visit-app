@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -39,6 +40,7 @@ public class DentistAppAppointmentRegistrationTests {
     }
 
     @Test
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     public void testRegisterVisit() throws Exception {
         DentistVisitFormDTO formDTO = new DentistVisitFormDTO();
         formDTO.setDentistId(7L);
@@ -56,6 +58,7 @@ public class DentistAppAppointmentRegistrationTests {
     }
 
     @Test(expected = DentistVisitTimeOverlappingException.class)
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     public void textRegisterVisitWithOverlappingTime() throws Exception {
         visitService.addVisit(3L, LocalDate.of(2021, 11, 16), LocalTime.of(13, 10));
     }

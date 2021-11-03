@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalTime;
@@ -19,6 +20,7 @@ public class DentistAppUpdateAppointmentTests {
     private DentistVisitService visitService;
 
     @Test
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     public void testUpdateAppointment() {
         List<DentistVisitDto> currentVisits = visitService.getActiveVisits();
         DentistVisitDto visit = currentVisits.stream().filter(v -> v.getVisitId() == 1).findFirst().get();

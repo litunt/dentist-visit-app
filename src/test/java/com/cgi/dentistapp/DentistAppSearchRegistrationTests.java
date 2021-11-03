@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -21,16 +22,19 @@ public class DentistAppSearchRegistrationTests {
     private DentistVisitService visitService;
 
     @Test
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     public void testSearchByDentist() {
         long dentistId = 3L;
         DentistVisitSearchFormDTO searchFormDTO = new DentistVisitSearchFormDTO();
         searchFormDTO.setDentistId(dentistId);
         List<DentistVisitDto> visits = visitService.searchActiveVisits(searchFormDTO);
+        visits.addAll(visitService.searchPreviousVisits(searchFormDTO));
         assert visits.size() == 3;
         assert visits.stream().allMatch(v -> v.getDentist().getId() == dentistId);
     }
 
     @Test
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     public void testSearchByDateAndDentist() {
         long dentistId = 3L;
         DentistVisitSearchFormDTO searchFormDTO = new DentistVisitSearchFormDTO();
@@ -44,6 +48,7 @@ public class DentistAppSearchRegistrationTests {
     }
 
     @Test
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     public void testSearchByTime() {
         DentistVisitSearchFormDTO searchFormDTO = new DentistVisitSearchFormDTO();
         searchFormDTO.setStartTime(LocalTime.of(10, 0));
@@ -54,6 +59,7 @@ public class DentistAppSearchRegistrationTests {
     }
 
     @Test
+    @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
     public void testSearchByTimeAndDentist() {
         long dentistId = 3L;
         DentistVisitSearchFormDTO searchFormDTO = new DentistVisitSearchFormDTO();
