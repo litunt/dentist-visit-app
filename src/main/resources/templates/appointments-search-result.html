@@ -1,0 +1,73 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/} "/>
+    <link th:rel="stylesheet" th:href="@{/assets/css/main.css} "/>
+</head>
+<body>
+<ul>
+    <li><a href="/" th:action="@{/}" th:text="#{registration.title}">registration.title</a></li>
+    <li><a class="active" th:text="#{appointments.title}">appointments.title</a></li>
+</ul>
+<h3 th:text="#{appointments.search.title}">appointments.search.title</h3>
+<div th:object="${searchFormParams}">
+    <table>
+        <tr>
+            <th><p th:text="#{dentist.name}">dentist.name</p></th>
+            <td th:text="*{dentistName}"></td>
+        </tr>
+        <tr>
+            <th><p th:text="#{appointments.search.date.start}">appointments.search.date.start</p></th>
+            <td th:text="*{startDate}"></td>
+            <th><p th:text="#{appointments.search.date.end}">appointments.search.date.end</p></th>
+            <td th:text="*{endDate}"></td>
+        </tr>
+        <tr>
+            <th><p th:text="#{appointments.search.time.start}">appointments.search.time.start</p></th>
+            <td th:text="*{startTime}"></td>
+            <th><p th:text="#{appointments.search.time.end}">appointments.search.time.end</p></th>
+            <td th:text="*{endTime}"></td>
+        </tr>
+    </table>
+</div>
+<table class="table-bordered" th:if="${appointments}" th:object="${appointments}">
+    <tr>
+        <th>&nbsp;</th>
+        <th class="th-bordered" th:text="#{dentist.name}"></th>
+        <th class="th-bordered" th:text="#{visit.date}"></th>
+        <th class="th-bordered" th:text="#{visit.time}"></th>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td colspan="5" th:text="#{visits.active}">visits.active</td>
+    </tr>
+    <tr th:each="activeVisit, iter : *{activeVisits}">
+        <td class="td-bordered" th:text="${iter.index + 1}"></td>
+        <td class="td-bordered" th:text="${activeVisit.dentist.name}"></td>
+        <td class="td-bordered" th:text="${activeVisit.visitDate}"></td>
+        <td class="td-bordered" th:text="${activeVisit.visitTime}"></td>
+        <td>
+            <button th:onclick="'window.location.href=\'/visit/' + ${activeVisit.visitId} + '\''"
+                    th:text="#{appointment.details}">appointment.details</button>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="5" th:text="#{visits.previous}">visits.previous</td>
+    </tr>
+    <tr th:each="prevVisit, iter : *{previousVisits}">
+        <td class="td-bordered" th:text="${iter.index + 1}"></td>
+        <td class="td-bordered" th:text="${prevVisit.dentist.name}"></td>
+        <td class="td-bordered" th:text="${prevVisit.visitDate}"></td>
+        <td class="td-bordered" th:text="${prevVisit.visitTime}"></td>
+        <td>
+            <button th:onclick="'window.location.href=\'/visit/' + ${prevVisit.visitId} + '\''"
+                    th:text="#{appointment.details}">appointment.details</button>
+        </td>
+    </tr>
+</table>
+<button onclick="history.back()" th:text="#{visit.back}">visit.back</button>
+
+<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/} "/>
+    <link th:rel="stylesheet" th:href="@{/assets/css/main.css} "/>
+</head>
+<body>
+<ul>
+    <li><a href="/" th:action="@{/}" th:text="#{registration.title}">registration.title</a></li>
+    <li><a href="/appointments" class="active" th:text="#{appointments.title}">appointments.title</a></li>
+</ul>
+<h3 th:text="#{registration.details.title}">registration.details.title</h3>
+<div th:object="${visitDetails}">
+    <table>
+        <tr>
+            <th><p th:text="#{dentist.name}">dentist.name</p></th>
+            <td th:text="*{dentist.name}"></td>
+        </tr>
+        <tr>
+            <th><p th:text="#{visit.date}">visit.date</p></th>
+            <td th:text="*{visitDate}"></td>
+        </tr>
+        <tr>
+            <th><p th:text="#{visit.time}">visit.time</p></th>
+            <td th:text="*{visitTime}"></td>
+        </tr>
+    </table>
+    <form th:action="@{/visit/remove}" th:object="${visitDetails}" method="post">
+        <td><input type="hidden" th:value="${visitId}" th:field="*{visitId}"/></td>
+        <button>Remove</button>
+    </form>
+    <button th:if="*{isActive}" onclick="openEditVisitForm()" th:text="#{edit.visit}">edit.visit</button>
+</div>
+<form action="#" id="editVisitForm" hidden="true" th:action="@{/visit/update}" th:object="${visitDetails}" method="post">
+    <table>
+        <tr>
+            <td><p th:text="#{visit.time.new}">visit.time.new</p></td>
+            <td><input type="hidden" th:value="${visitId}" th:field="*{visitId}"/></td>
+            <td><input type="date" th:field="*{visitDate}" th:value="${{visitDate}}"/></td>
+            <td><input type="time" min="08:00" max="18:00" th:field="*{visitTime}" th:value="${{visitTime}}"/></td>
+            <td th:if="${#fields.hasErrors('visitDate')}" th:errors="*{visitDate}">date.error</td>
+            <td th:if="${#fields.hasErrors('visitTime')}" th:errors="*{visitTime}">time.error</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="submit" th:text="#{update.visit}"></button>
+            </td>
+        </tr>
+        <tr th:if="*{errors}">
+            <p class="error" th:each="error : *{errors}" th:text="${error}"></p>
+        </tr>
+    </table>
+</form>
+<button onclick="window.location.href='/appointments'" th:text="#{visit.back}">visit.back</button>
+
+<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+
+<script th:inline="javascript">
+    function openEditVisitForm() {
+        document.getElementById('editVisitForm').hidden = false;
+    }
+</script>
+
+</body>
+</html>

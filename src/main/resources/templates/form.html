@@ -1,0 +1,53 @@
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/5.1.3/css/} "/>
+    <link th:rel="stylesheet" th:href="@{/assets/css/main.css} "/>
+</head>
+<body>
+<ul>
+    <li><a href="" class="active" th:text="#{registration.title}">registration.title</a></li>
+    <li><a href="appointments" th:action="@{/appointments.html}" th:text="#{appointments.title}">appointments.title</a></li>
+</ul>
+<h3 th:text="#{registration.title}">registration.title</h3>
+<form action="#" th:action="@{/}" th:object="${form}" method="post">
+    <table>
+        <tr>
+            <td><p th:text="#{dentist.name}">dentist.name</p></td>
+            <td>
+                <select th:field="*{dentistId}">
+                    <option
+                            th:each="d : *{availableDentists}"
+                            th:value="${d.id}"
+                            th:text="${d.name}">
+                    </option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td><p th:text="#{visit.time}">visit.time</p></td>
+            <td><input type="date" th:field="*{visitDate}"/></td>
+            <td><input type="time" min="08:00" max="18:00" th:field="*{visitTime}"/></td>
+            <td th:if="${#fields.hasErrors('visitDate')}" th:errors="*{visitDate}">date.error</td>
+            <td th:if="${#fields.hasErrors('visitTime')}" th:errors="*{visitTime}">time.error</td>
+        </tr>
+        <tr>
+            <td>
+                <button type="submit" th:text="#{register.visit}"></button>
+            </td>
+        </tr>
+        <tr th:if="*{errors}">
+            <p class="error" th:each="error : *{errors}" th:text="${error}"></p>
+        </tr>
+    </table>
+</form>
+
+<script th:src="@{/webjars/popper.js/2.9.3/umd/popper.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/5.1.3/js/bootstrap.min.js}"></script>
+
+<script th:inline="javascript">
+
+</script>
+
+</body>
+</html>
