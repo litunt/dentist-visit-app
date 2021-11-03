@@ -7,6 +7,7 @@ Test exercise for CGI
 - from Lifecycle run clean and package to let all dependencies set up correcly
 - check Java 8 JDK is set as project SDK as well as project language level is Java 8
 - run application from `DentistAppApplication` class
+- when console says Started Application, then go to http://localhost:8080
 
 ### Stage 0
 - opened the project through pom.xml file so that IntelliJ would be able to run Maven prject build immediately
