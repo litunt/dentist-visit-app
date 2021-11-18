@@ -26,8 +26,8 @@
         </tr>
         <tr>
             <td><p th:text="#{visit.time}">visit.time</p></td>
-            <td><input type="date" th:field="*{visitDate}"/></td>
-            <td><input type="time" min="08:00" max="18:00" th:field="*{visitTime}"/></td>
+            <td><input type="date" th:min="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}" th:field="*{visitDate}"/></td>
+            <td><input type="time" th:min="${'08:00:00'}" th:max="${'17:30:00'}" th:field="*{visitTime}"/></td>
             <td th:if="${#fields.hasErrors('visitDate')}" th:errors="*{visitDate}">date.error</td>
             <td th:if="${#fields.hasErrors('visitTime')}" th:errors="*{visitTime}">time.error</td>
         </tr>

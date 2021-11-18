@@ -30,6 +30,7 @@ public class DentistAppController extends WebMvcConfigurerAdapter {
     public void addViewControllers(ViewControllerRegistry registry) {
         registry.addViewController("/results").setViewName("results");
         registry.addViewController("/details").setViewName("details");
+        registry.addViewController("/appointments-search-result").setViewName("appointments-search-result");
     }
 
     @GetMapping("/")
@@ -71,7 +72,9 @@ public class DentistAppController extends WebMvcConfigurerAdapter {
         display.setActiveVisits(dentistVisitService.searchActiveVisits(searchForm));
         display.setPreviousVisits(dentistVisitService.searchPreviousVisits(searchForm));
 
-        searchForm.setDentistName(dentistService.getDentistById(searchForm.getDentistId()).getName());
+        if (searchForm.getDentistId() != null) {
+            searchForm.setDentistName(dentistService.getDentistById(searchForm.getDentistId()).getName());
+        }
 
         model.addFlashAttribute("appointments", display);
         model.addFlashAttribute("searchFormParams", searchForm);
