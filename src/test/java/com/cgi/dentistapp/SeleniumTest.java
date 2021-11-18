@@ -3,6 +3,7 @@ package com.cgi.dentistapp;
 import com.cgi.dentistapp.repository.DentistRepository;
 import com.dentistapp.selenium.EnvManager;
 import com.dentistapp.selenium.RunEnvironment;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,7 +11,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.internal.MouseAction;
 import org.openqa.selenium.support.ui.Select;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -232,8 +232,8 @@ public class SeleniumTest {
 
     @Test
     public void FT11() {
+        final String maxDateValidationMsg = "Value must be %s or earlier.";
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        final int baseNumOfRows = 3;
         driver.get("http://localhost:8081/appointments");
         WebElement startDtElement = driver.findElement(By.name("startDate"));
         WebElement endDtElement = driver.findElement(By.name("endDate"));
@@ -241,10 +241,30 @@ public class SeleniumTest {
         LocalDate visitStartDt = LocalDate.of(2021, 11, 15);
         LocalDate visitEndDt = LocalDate.of(2021, 11, 10);
 
-        String dateAsStr = visitStartDt.format(formatter);
+        String startDateAsStr = visitStartDt.format(formatter);
+        String endDateAsStr = visitEndDt.format(formatter);
 
-        startDtElement.sendKeys(dateAsStr);
-        endDtElement.sendKeys(dateAsStr);
+        startDtElement.sendKeys(startDateAsStr);
+        endDtElement.sendKeys(endDateAsStr);
+
+        WebElement searchBtn = driver.findElement(By.id("submit-form"));
+        searchBtn.click();
+
+        assertEquals(String.format(maxDateValidationMsg, LocalDate.now().format(formatter)),
+                startDtElement.getAttribute("validationMessage"));
+    }
+
+    @Test
+    public void FT12() {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        final int baseNumOfRows = 3;
+        driver.get("http://localhost:8081/appointments");
+        WebElement dateElement = driver.findElement(By.name("endDate"));
+
+        LocalDate visitEndDt = LocalDate.of(2021, 11, 10);
+        String dateAsStr = visitEndDt.format(formatter);
+
+        dateElement.sendKeys(dateAsStr);
 
         WebElement searchBtn = driver.findElement(By.id("submit-form"));
         searchBtn.click();
@@ -258,13 +278,191 @@ public class SeleniumTest {
         assertEquals(3, tableRows.size() - baseNumOfRows);
     }
 
+    @Test
+    public void FT13() {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+        final int baseNumOfRows = 3;
+        driver.get("http://localhost:8081/appointments");
+        WebElement startDtElement = driver.findElement(By.name("startDate"));
+        WebElement endDtElement = driver.findElement(By.name("endDate"));
+
+        LocalDate visitEndDt = LocalDate.of(2021, 11, 17);
+        String dateAsStr = visitEndDt.format(formatter);
+
+        startDtElement.sendKeys(dateAsStr);
+        endDtElement.sendKeys(dateAsStr);
+
+        WebElement searchBtn = driver.findElement(By.id("submit-form"));
+        searchBtn.click();
+
+        String searchResultTitle = "Appointments search result";
+        WebElement titleElement = driver.findElement(By.tagName("h3"));
+        assertEquals(searchResultTitle, getInnerText(driver, titleElement));
+
+        WebElement resultTable = driver.findElement(By.className("table-bordered"));
+        List<WebElement> tableRows = resultTable.findElements(By.tagName("tr"));
+        assertEquals(1, tableRows.size() - baseNumOfRows);
+    }
+
+    @Test
+    public void FT14() {
+        FT11();
+    }
+
+    @Test
+    public void FT15() {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        final int baseNumOfRows = 3;
+        driver.get("http://localhost:8081/appointments");
+        WebElement startTimeElement = driver.findElement(By.name("startTime"));
+        WebElement endTimeElement = driver.findElement(By.name("endTime"));
+
+        LocalTime startTime = LocalTime.of(10, 0);
+        String startTimeAsStr = startTime.format(formatter);
+        LocalTime endTime = LocalTime.of(14, 0);
+        String endTimeAsStr = endTime.format(formatter);
+
+        startTimeElement.sendKeys(startTimeAsStr);
+        endTimeElement.sendKeys(endTimeAsStr);
+
+        WebElement searchBtn = driver.findElement(By.id("submit-form"));
+        searchBtn.click();
+
+        String searchResultTitle = "Appointments search result";
+        WebElement titleElement = driver.findElement(By.tagName("h3"));
+        assertEquals(searchResultTitle, getInnerText(driver, titleElement));
+
+        WebElement resultTable = driver.findElement(By.className("table-bordered"));
+        List<WebElement> tableRows = resultTable.findElements(By.tagName("tr"));
+        assertEquals(2, tableRows.size() - baseNumOfRows);
+    }
+
+    @Test
+    public void FT16() {
+        final String maxTimeValidationMsg = "Value must be %s or earlier.";
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        driver.get("http://localhost:8081/appointments");
+        WebElement startTimeElement = driver.findElement(By.name("startTime"));
+        WebElement endTimeElement = driver.findElement(By.name("endTime"));
+
+        LocalTime startTime = LocalTime.of(14, 0);
+        String startTimeAsStr = startTime.format(formatter);
+        LocalTime endTime = LocalTime.of(10, 0);
+        String endTimeAsStr = endTime.format(formatter);
+
+        startTimeElement.sendKeys(startTimeAsStr);
+        endTimeElement.sendKeys(endTimeAsStr);
+
+        WebElement searchBtn = driver.findElement(By.id("submit-form"));
+        searchBtn.click();
+
+        assertEquals(String.format(maxTimeValidationMsg, endTime.format(formatter)),
+                startTimeElement.getAttribute("validationMessage"));
+    }
+
+    @Test
+    public void FT17() {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        final int baseNumOfRows = 3;
+        driver.get("http://localhost:8081/appointments");
+        WebElement startTimeElement = driver.findElement(By.name("startTime"));
+        WebElement endTimeElement = driver.findElement(By.name("endTime"));
+
+        LocalTime visitStartTime = LocalTime.of(13, 0);
+        String timeAsStr = visitStartTime.format(formatter);
+
+        startTimeElement.sendKeys(timeAsStr);
+        endTimeElement.sendKeys(timeAsStr);
+
+        WebElement searchBtn = driver.findElement(By.id("submit-form"));
+        searchBtn.click();
+
+        String searchResultTitle = "Appointments search result";
+        WebElement titleElement = driver.findElement(By.tagName("h3"));
+        assertEquals(searchResultTitle, getInnerText(driver, titleElement));
+
+        WebElement resultTable = driver.findElement(By.className("table-bordered"));
+        List<WebElement> tableRows = resultTable.findElements(By.tagName("tr"));
+        assertEquals(0, tableRows.size() - baseNumOfRows);
+    }
+
+    @Test
+    public void FT18() {
+        FT16();
+    }
+
+    @Test
+    public void FT19() {
+        FT15();
+    }
+
+    @Test
+    public void FT20() {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        final int baseNumOfRows = 3;
+        driver.get("http://localhost:8081/appointments");
+        WebElement startTimeElement = driver.findElement(By.name("startTime"));
+        WebElement endTimeElement = driver.findElement(By.name("endTime"));
+
+        LocalTime visitEndTime = LocalTime.of(13, 0);
+        String timeAsStr = visitEndTime.format(formatter);
+
+        startTimeElement.sendKeys(timeAsStr);
+        endTimeElement.sendKeys(timeAsStr);
+
+        WebElement searchBtn = driver.findElement(By.id("submit-form"));
+        searchBtn.click();
+
+        String searchResultTitle = "Appointments search result";
+        WebElement titleElement = driver.findElement(By.tagName("h3"));
+        assertEquals(searchResultTitle, getInnerText(driver, titleElement));
+
+        WebElement resultTable = driver.findElement(By.className("table-bordered"));
+        List<WebElement> tableRows = resultTable.findElements(By.tagName("tr"));
+        assertEquals(0, tableRows.size() - baseNumOfRows);
+    }
+
+    @Test
+    public void FT21() {
+        final int baseNumOfRows = 3;
+        driver.get("http://localhost:8081/appointments");
+        Select dentistDropDown = new Select(driver.findElement(By.name("dentistId")));
+        dentistDropDown.selectByVisibleText("Karl Gustav");
+        Long chosenDentistId = Long.valueOf(dentistDropDown.getFirstSelectedOption().getAttribute("value"));
+        assertNotNull(dentistRepository.findOne(chosenDentistId));
+
+        WebElement searchBtn = driver.findElement(By.id("submit-form"));
+        searchBtn.click();
+
+        WebElement resultTable = driver.findElement(By.className("table-bordered"));
+        List<WebElement> tableRows = resultTable.findElements(By.tagName("tr"));
+        assertEquals(3, tableRows.size() - baseNumOfRows);
+    }
+
+    @Test
+    public void FT22() {
+        final int baseNumOfRows = 3;
+        driver.get("http://localhost:8081/appointments");
+
+        WebElement searchBtn = driver.findElement(By.id("submit-form"));
+        searchBtn.click();
+
+        String searchResultTitle = "Appointments search result";
+        WebElement titleElement = driver.findElement(By.tagName("h3"));
+        assertEquals(searchResultTitle, getInnerText(driver, titleElement));
+
+        WebElement resultTable = driver.findElement(By.className("table-bordered"));
+        List<WebElement> tableRows = resultTable.findElements(By.tagName("tr"));
+        assertEquals(6, tableRows.size() - baseNumOfRows);
+    }
+
     private String getInnerText(WebDriver driver, WebElement element) {
         JavascriptExecutor executor = (JavascriptExecutor) driver;
         return (String) executor.executeScript("return arguments[0].innerText", element);
     }
 
-//    @After
-//    public void tearDown() {
-//        EnvManager.shutDownDriver();
-//    }
+    @After
+    public void tearDown() {
+        EnvManager.shutDownDriver();
+    }
 }
